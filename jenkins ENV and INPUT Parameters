@@ -1,0 +1,198 @@
+pipeline {
+    environment {
+        MY_VAR = "Hello World"
+    }
+    stages {
+        stage('Example') {
+            steps {
+                script {
+                    echo "Variable: ${env.MY_VAR}"
+                }
+            }
+        }
+    }
+}
+
+
+
+
+pipeline {
+    agent any
+    parameters {
+        string(name: 'MY_PARAM', defaultValue: 'Default', description: 'Custom parameter')
+    }
+    stages {
+        stage('Show Parameter') {
+            steps {
+                echo "Parameter Value: ${params.MY_PARAM}"
+            }
+        }
+    }
+}
+
+
+
+
+String Parameter
+Used for entering a string value (e.g., branch name, username, etc.).
+
+pipeline {
+    agent any
+    parameters {
+        string(name: 'USERNAME', defaultValue: 'admin', description: 'Enter username')
+    }
+    stages {
+        stage('Print String Parameter') {
+            steps {
+                echo "Username: ${params.USERNAME}"
+            }
+        }
+    }
+}
+
+
+
+
+Choice Parameter
+Provides a dropdown list of predefined values.
+
+
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['DEV', 'QA', 'PROD'], description: 'Select the environment')
+    }
+    stages {
+        stage('Print Choice Parameter') {
+            steps {
+                echo "Environment: ${params.ENVIRONMENT}"
+            }
+        }
+    }
+}
+
+
+
+
+
+Boolean Parameter
+Checkbox for true/false values.
+
+
+pipeline {
+    agent any
+    parameters {
+        booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Check to deploy')
+    }
+    stages {
+        stage('Check Deployment') {
+            steps {
+                script {
+                    if (params.DEPLOY) {
+                        echo "Deployment started!"
+                    } else {
+                        echo "Skipping deployment."
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+Password Parameter
+Used for securely entering passwords (hidden in logs).
+
+
+
+
+pipeline {
+    agent any
+    parameters {
+        password(name: 'DB_PASSWORD', description: 'Enter database password')
+    }
+    stages {
+        stage('Print Password Parameter') {
+            steps {
+                echo "Password length: ${params.DB_PASSWORD.length()}" // Do not print actual password
+            }
+        }
+    }
+}
+
+
+
+
+
+
+Multi-line String Parameter
+Allows entering multiple lines of text
+
+
+pipeline {
+    agent any
+    parameters {
+        text(name: 'CONFIG', defaultValue: 'key=value', description: 'Enter configuration details')
+    }
+    stages {
+        stage('Print Config') {
+            steps {
+                echo "Config: ${params.CONFIG}"
+            }
+        }
+    }
+}
+
+
+
+
+
+1.6 File Parameter
+Allows users to upload a file to the build.
+
+
+pipeline {
+    agent any
+    parameters {
+        file(name: 'UPLOAD_FILE', description: 'Upload a file')
+    }
+    stages {
+        stage('Process File') {
+            steps {
+                script {
+                    def filePath = "${params.UPLOAD_FILE}"
+                    echo "Processing file: $filePath"
+                }
+            }
+        }
+    }
+}
+
+
+
+
+ Prompting User Input During Pipeline Execution
+ 
+ 
+ pipeline {
+    agent any
+    stages {
+        stage('User Approval') {
+            steps {
+                script {
+                    def userInput = input message: 'Proceed with deployment?', parameters: [
+                        choice(name: 'DEPLOY_ENV', choices: ['DEV', 'QA', 'PROD'], description: 'Select environment')
+                    ]
+                    echo "User selected: $userInput"
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
